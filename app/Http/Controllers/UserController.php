@@ -78,4 +78,27 @@ class UserController extends Controller
     {
 
     }
+
+
+    public function showPartInVote(Request $request){
+        $userId = $request->user->id;
+
+        return response()->json(
+            [
+                'code'=>0,
+                'data'=>$this->userService->showPartInVote($userId)
+            ]
+        );
+    }
+
+    public function showCreateVote(Request $request){
+        $userId = $request->user->id;
+
+        return response()->json(
+            [
+                'code'=>0,
+                'data'=>$this->userService->showCreateVote($userId)
+            ]
+        );
+    }
 }

@@ -18,4 +18,6 @@ interface ProblemServiceInterface
     function addProblemChooseNum($problemId);
 
     function getProblem($projectId);
+
+    function getProblemBeforeVote($projectId);
 }

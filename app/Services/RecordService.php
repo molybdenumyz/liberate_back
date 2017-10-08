@@ -16,11 +16,12 @@ use Illuminate\Support\Facades\DB;
 class RecordService implements RecordServiceInterface
 {
     private $recordRepo;
+    private $problemService;
 
-
-    public function __construct(RecordRepository $recordRepo)
+    public function __construct(ProblemService $problemService,RecordRepository $recordRepo)
     {
         $this->recordRepo = $recordRepo;
+        $this->problemService  = $problemService;
     }
 
     function addRecord($projectId, array $problemIds, $userId = null, $ip)
@@ -36,6 +37,8 @@ class RecordService implements RecordServiceInterface
               ];
 
               $this->recordRepo->insert($item);
+
+              $this->problemService->addProblemChooseNum($problemId);
           }
        });
 

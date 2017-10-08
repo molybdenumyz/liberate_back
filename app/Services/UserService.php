@@ -10,21 +10,29 @@ namespace App\Services;
 
 
 use App\Common\Encrypt;
+use App\Common\Utils;
 use App\Exceptions\Auth\PasswordWrongException;
 use App\Exceptions\Auth\UserExistedException;
 use App\Exceptions\Auth\UserNotExistException;
+use App\Repository\Eloquent\ProjectRepository;
+use App\Repository\Eloquent\RecordRepository;
 use App\Repository\Eloquent\UserRepository;
 use App\Services\Contracts\UserServiceInterface;
+use Illuminate\Http\Request;
 
 class UserService implements UserServiceInterface
 {
     private $userRepository;
     private $tokenService;
+    private $recordRepo;
+    private $projectRepo;
 
-    public function __construct(UserRepository $userRepository, TokenService $tokenService)
+    public function __construct(ProjectRepository $projectRepository,RecordRepository $recordRepository,UserRepository $userRepository, TokenService $tokenService)
     {
         $this->userRepository = $userRepository;
         $this->tokenService = $tokenService;
+        $this->recordRepo = $recordRepository;
+        $this->projectRepo = $projectRepository;
     }
 
     public function getRepository()
@@ -143,4 +151,32 @@ class UserService implements UserServiceInterface
     {
         return $this->userRepository->getWhereCount($condition) == 1;
     }
+
+    public function showPartInVote($userId){
+        $data = $this->recordRepo->showPartInVote($userId);
+
+        foreach ($data as &$datum){
+            $datum =  Utils::camelize($datum);
+        }
+
+        return $data;
+    }
+
+    public function showCreateVote($userId){
+        $data = $this->projectRepo->getBy('user_id',$userId,['id',
+            'title',
+            'start_at',
+            'end_at',
+            'type',
+            'is_public',
+            'max_choose',
+            'has_pic']);
+
+        foreach ($data as &$datum){
+            $datum =  Utils::camelize($datum);
+        }
+
+        return $data;
+    }
+
 }

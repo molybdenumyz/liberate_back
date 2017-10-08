@@ -18,4 +18,6 @@ class UserRepository extends AbstractRepository
     }
 
     use InsertWithIdTrait;
+
+
 }

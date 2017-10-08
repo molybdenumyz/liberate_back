@@ -9,9 +9,11 @@
 namespace App\Services\Contracts;
 
 
+use Illuminate\Http\UploadedFile;
+
 interface PicServiceInterface
 {
-    function uploadPic();
+    function uploadPic(UploadedFile $file);
 
     function addPicToProject($projectId,$picList);
 

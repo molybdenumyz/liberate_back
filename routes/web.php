@@ -12,9 +12,11 @@
 */
 
 include 'custom/user.php';
+include 'custom/project.php';
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/test','ProjectController@create');
+
+

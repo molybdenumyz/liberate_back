@@ -16,4 +16,16 @@ class RecordRepository extends AbstractRepository
     {
         return "App\Repository\Models\Record";
     }
+
+
+    public function showPartInVote($userId){
+        return $this->model
+            ->where('user_id',$userId)
+            ->join('projects','projects.id','=','records.project_id')
+            ->select('project.*')
+            ->distinct()
+            ->get();
+    }
+
+
 }
