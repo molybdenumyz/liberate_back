@@ -8,5 +8,11 @@
  */
 
 
+Route::group(['middleware' => 'token', 'prefix' => '/vote'], function () {
+    Route::post('/create', 'ProjectController@create');
 
-Route::post('/test','ProjectController@create');
+});
+Route::group(['prefix' => '/vote'], function () {
+    Route::get('/list', 'ProjectController@getProjectList');
+    Route::get('/detail/{projectId}','ProjectController@getProjectDetail');
+});

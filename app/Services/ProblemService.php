@@ -59,14 +59,14 @@ class ProblemService implements ProblemServiceInterface
 
     function getProblem($projectId)
     {
-        $infos = $this->problemRepo->getBy('project_id',$projectId,['id','title','count'])->toArray();
+        $infos = $this->problemRepo->getBy('project_id', $projectId, ['id', 'title', 'count'])->toArray();
 
         return $infos;
     }
 
     function getProblemBeforeVote($projectId)
     {
-        $infos = $this->problemRepo->getBy('project_id',$projectId,['id','title'])->toArray();
+        $infos = $this->problemRepo->getBy('project_id', $projectId, ['id', 'title'])->toArray();
 
         return $infos;
     }

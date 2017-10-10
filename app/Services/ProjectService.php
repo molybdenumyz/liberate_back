@@ -18,9 +18,10 @@ use App\Services\Contracts\ProjectServiceInterface;
 class ProjectService implements ProjectServiceInterface
 {
     private $projectRepo;
+
     function __construct(ProjectRepository $projectRepository)
     {
-        $this->projectRepo =  $projectRepository;
+        $this->projectRepo = $projectRepository;
     }
 
     function createProject(array $info)
@@ -30,35 +31,35 @@ class ProjectService implements ProjectServiceInterface
 
     function deleteProject($userId, $projectId)
     {
-        if ($this->projectRepo->getWhereCount(['id'=>$projectId]) != 1)
+        if ($this->projectRepo->getWhereCount(['id' => $projectId]) != 1)
             throw new projectNotExistException();
 
-       $rows = $this->projectRepo->deleteWhere(['user_id'=>$userId,'id'=>$projectId]);
+        $rows = $this->projectRepo->deleteWhere(['user_id' => $userId, 'id' => $projectId]);
 
-       if ($rows != 1)
-           throw new PermissionDeniedException();
+        if ($rows != 1)
+            throw new PermissionDeniedException();
 
-       return true;
+        return true;
 
     }
 
     function getProjectList($page, $rows)
     {
-
-        $info = $this->projectRepo->paginate($page,$rows,[],['id',
-           'title',
-           'start_at',
-           'end_at',
-           'type',
-           'is_public',
-           'max_choose',
-           'has_pic']);
+        $time = Utils::createTimeStamp();
+        $info = $this->projectRepo->paginate($page, $rows, [['start_at','>',$time]], ['id',
+            'title',
+            'start_at',
+            'end_at',
+            'type',
+            'is_public',
+            'max_choose',
+            'has_pic']);
 
         $info = Utils::camelize($info);
 
         return [
-            'list'=>$info,
-            'count'=>$this->projectRepo->getWhereCount()
+            'list' => $info,
+            'count' => $this->projectRepo->getWhereCount([['start_at','>',$time]])
         ];
     }
 

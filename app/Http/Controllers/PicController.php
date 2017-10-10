@@ -30,13 +30,13 @@ class PicController
             $file = $request->File('upload');
 
             $data = $this->picService->uploadPic($file);
-        }else
+        } else
             $data = null;
 
         return response()->json(
             [
-                'code'=>0,
-                'data'=>$data
+                'code' => 0,
+                'data' => $data
             ]
         );
     }

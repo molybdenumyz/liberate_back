@@ -20,7 +20,6 @@ class UserController extends Controller
     {
         $rules = [
             'name' => 'required|max:100',
-            'email' => 'required|email|max:100',
             'mobile' => 'required|mobile|max:45',
             'password' => 'required|min:6|max:20'
         ];
@@ -46,27 +45,30 @@ class UserController extends Controller
         $rules = [
             'identifier' => 'required|string',
             'password' => 'required|min:6|max:20',
-            'client' => 'required|min:1|max:2' // 登录设备标识符
+            'client' => 'min:1|max:2' // 登录设备标识符
         ];
 
-        ValidationHelper::validateCheck($request->all(), $rules);
+        if ($request->method() == "POST") {
+            ValidationHelper::validateCheck($request->all(), $rules);
 
-        // 在此定制登录方式
+            // 在此定制登录方式
 
-        $identifier = $request->identifier;
+            $identifier = $request->identifier;
 
-        if (Utils::isEmail($identifier)) {
-            $loginMethod = 'email';
-        } else if (Utils::isMobile($identifier)) {
-            $loginMethod = 'mobile';
+            if (Utils::isEmail($identifier)) {
+                $loginMethod = 'email';
+            } else if (Utils::isMobile($identifier)) {
+                $loginMethod = 'mobile';
+            } else {
+                $loginMethod = 'name';
+            }
+
+            $data = $this->userService
+                ->loginBy($loginMethod, $identifier, $request->password, $request->ip(), 1);
         } else {
-            $loginMethod = 'name';
+            $data = $this->userService->login($request->user->id, $request->ip(), 1);
         }
 
-        $data = $this->userService
-            ->loginBy($loginMethod, $identifier, $request->password, $request->ip(),$request->client);
-
-        // 在下面定制要取出的字段
 
         return response()->json([
             'code' => 0,
@@ -74,30 +76,62 @@ class UserController extends Controller
         ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-
-    }
-
-
-    public function showPartInVote(Request $request){
         $userId = $request->user->id;
+
+        $this->userService->logout($userId, 1);
 
         return response()->json(
             [
-                'code'=>0,
-                'data'=>$this->userService->showPartInVote($userId)
+                'code' => 0
             ]
         );
     }
 
-    public function showCreateVote(Request $request){
+    public function updateUserPassword(Request $request)
+    {
+        $rules = [
+            'oldPassword' => 'required|min:6|max:20',
+            'newPassword' => 'required|min:6|max:20',
+        ];
+
+        $userPwd = ValidationHelper::checkAndGet($request, $rules);
+
+        $userInfo = [
+            'userId' => $request->user->id,
+            'password' => $userPwd['oldPassword'],
+            'newPassword' => $userPwd['newPassword']
+        ];
+
+        $this->userService->updateUserPassword($userInfo);
+
+        return response()->json(
+            ['code' => 0]
+        );
+    }
+
+
+    public function showPartInVote(Request $request)
+    {
         $userId = $request->user->id;
 
         return response()->json(
             [
-                'code'=>0,
-                'data'=>$this->userService->showCreateVote($userId)
+                'code' => 0,
+                'data' => $this->userService->showPartInVote($userId)
+            ]
+        );
+    }
+
+    public function showCreateVote(Request $request)
+    {
+        $userId = $request->user->id;
+
+        return response()->json(
+            [
+                'code' => 0,
+                'data' => $this->userService->showCreateVote($userId)
             ]
         );
     }

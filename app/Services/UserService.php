@@ -27,7 +27,7 @@ class UserService implements UserServiceInterface
     private $recordRepo;
     private $projectRepo;
 
-    public function __construct(ProjectRepository $projectRepository,RecordRepository $recordRepository,UserRepository $userRepository, TokenService $tokenService)
+    public function __construct(ProjectRepository $projectRepository, RecordRepository $recordRepository, UserRepository $userRepository, TokenService $tokenService)
     {
         $this->userRepository = $userRepository;
         $this->tokenService = $tokenService;
@@ -40,6 +40,25 @@ class UserService implements UserServiceInterface
         return $this->userRepository;
     }
 
+    public function updateUserPassword(array $userInfo)
+    {
+        $user = $this->userRepository->get($userInfo['userId']);
+
+
+        if ($user == null) {
+            throw new UserNotExistException();
+        }
+
+        // 检查密码
+
+        if (!Encrypt::check($userInfo['password'], $user->password)) {
+            throw new PasswordWrongException();
+        }
+
+        return $this->userRepository->update(['password' => Encrypt::encrypt($userInfo['newPassword'])], $userInfo['userId']);
+    }
+
+
     /**
      * 注册
      * @param array $userInfo 用户信息
@@ -51,7 +70,7 @@ class UserService implements UserServiceInterface
         // 在这里设置需要检测的字段
 
         $uniques = [
-            'name', 'mobile', 'email'
+            'name', 'mobile'
         ];
 
         foreach ($uniques as $unique) {
@@ -103,12 +122,12 @@ class UserService implements UserServiceInterface
      * @return string token值
      */
 
-    public function loginBy(string $param, string $identifier, string $password, string $ip,int $client)
+    public function loginBy(string $param, string $identifier, string $password, string $ip, int $client)
     {
         // 在这里修改需要获取的字段
 
         $user = $this->userRepository->getBy($param, $identifier, [
-            'id', 'password','name','email','mobile'
+            'id', 'password', 'name', 'email', 'mobile'
         ])->first();
 
         if ($user == null) {
@@ -123,28 +142,27 @@ class UserService implements UserServiceInterface
 
         return [
             'user' => $user,
-            'token' => $this->tokenService->makeToken($user->id, $ip,$client)
+            'token' => $this->tokenService->makeToken($user->id, $ip, $client)
         ];
     }
 
-    public function login(int $userId, string $ip,int $client): string
+    public function login(int $userId, string $ip, int $client)
     {
         $user = $this->userRepository->get($userId, [
-            'id', 'password','name','email','mobile'
+            'id', 'password', 'name', 'email', 'mobile'
         ]);
         if (!$this->isUserExist(['id' => $userId])) {
             throw new UserNotExistException();
         }
 
         return [
-            'user' => $user,
-            'token' => $this->tokenService->makeToken($userId, $ip,$client)
+            'user' => $user
         ];
     }
 
-    public function logout(int $userId,int $client)
+    public function logout(int $userId, int $client)
     {
-        $this->tokenService->destoryToken($userId,$client);
+        $this->tokenService->destoryToken($userId, $client);
     }
 
     public function isUserExist(array $condition): bool
@@ -152,18 +170,20 @@ class UserService implements UserServiceInterface
         return $this->userRepository->getWhereCount($condition) == 1;
     }
 
-    public function showPartInVote($userId){
+    public function showPartInVote($userId)
+    {
         $data = $this->recordRepo->showPartInVote($userId);
 
-        foreach ($data as &$datum){
-            $datum =  Utils::camelize($datum);
+        foreach ($data as &$datum) {
+            $datum = Utils::camelize($datum);
         }
 
         return $data;
     }
 
-    public function showCreateVote($userId){
-        $data = $this->projectRepo->getBy('user_id',$userId,['id',
+    public function showCreateVote($userId)
+    {
+        $data = $this->projectRepo->getBy('user_id', $userId, ['id',
             'title',
             'start_at',
             'end_at',
@@ -172,8 +192,8 @@ class UserService implements UserServiceInterface
             'max_choose',
             'has_pic']);
 
-        foreach ($data as &$datum){
-            $datum =  Utils::camelize($datum);
+        foreach ($data as &$datum) {
+            $datum = Utils::camelize($datum);
         }
 
         return $data;

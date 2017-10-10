@@ -18,37 +18,37 @@ class RecordService implements RecordServiceInterface
     private $recordRepo;
     private $problemService;
 
-    public function __construct(ProblemService $problemService,RecordRepository $recordRepo)
+    public function __construct(ProblemService $problemService, RecordRepository $recordRepo)
     {
         $this->recordRepo = $recordRepo;
-        $this->problemService  = $problemService;
+        $this->problemService = $problemService;
     }
 
     function addRecord($projectId, array $problemIds, $userId = null, $ip)
     {
-       DB::transaction(function () use($projectId,$problemIds,$userId,$ip){
-          foreach ($problemIds as $problemId){
+        DB::transaction(function () use ($projectId, $problemIds, $userId, $ip) {
+            foreach ($problemIds as $problemId) {
 
-              $item = [
-                  'ip'=>$ip,
-                  'problem_id'=>$problemId,
-                  'user_id'=>$userId,
-                  'project_id'=>$projectId
-              ];
+                $item = [
+                    'ip' => $ip,
+                    'problem_id' => $problemId,
+                    'user_id' => $userId,
+                    'project_id' => $projectId
+                ];
 
-              $this->recordRepo->insert($item);
+                $this->recordRepo->insert($item);
 
-              $this->problemService->addProblemChooseNum($problemId);
-          }
-       });
+                $this->problemService->addProblemChooseNum($problemId);
+            }
+        });
 
-       return true;
+        return true;
     }
 
     function dropRecord($projectId)
     {
-        DB::transaction(function ()use($projectId){
-            $this->recordRepo->deleteWhere(['project_id'=>$projectId]);
+        DB::transaction(function () use ($projectId) {
+            $this->recordRepo->deleteWhere(['project_id' => $projectId]);
         });
 
         return true;

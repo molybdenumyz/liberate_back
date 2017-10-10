@@ -169,11 +169,13 @@ abstract class AbstractRepository implements RepositoryInterface
                 ->where($param)
                 ->skip($size * --$page)
                 ->take($size)
+                ->orderBy('created_at','desc')
                 ->get($columns);
         else
             return $this->model
                 ->skip($size * --$page)
                 ->take($size)
+                ->orderBy('created_at','desc')
                 ->get($columns);
     }
 

@@ -51,7 +51,8 @@ class TokenMiddleware
 
         if($token->expires_at < $time)
             throw new TokenExpiredException();
-        $user = $this->userRepository->get($token->user_id)->first();
+
+        $user = $this->userRepository->get($token->user_id);
 
         if (config('user.register_need_check')) {
             if($user->status == 0)
@@ -59,6 +60,7 @@ class TokenMiddleware
         }
 
         $request->user = $user;
+
         return $next($request);
     }
 }
