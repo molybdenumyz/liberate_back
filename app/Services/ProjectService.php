@@ -43,17 +43,34 @@ class ProjectService implements ProjectServiceInterface
 
     }
 
-    function getProjectList($page, $rows)
+    function getProjectList($page, $rows,$type)
     {
         $time = Utils::createTimeStamp();
-        $info = $this->projectRepo->paginate($page, $rows, [['start_at','>',$time]], ['id',
-            'title',
-            'start_at',
-            'end_at',
-            'type',
-            'is_public',
-            'max_choose',
-            'has_pic']);
+
+        //0为未开始
+        if ($type == 0){
+            $info = $this->projectRepo->paginate($page, $rows, [['start_at','>',$time]], ['id',
+                'title',
+                'start_at',
+                'end_at',
+                'type',
+                'is_public',
+                'max_choose',
+                'has_pic']);
+        }else{
+            $info = $this->projectRepo->paginate($page, $rows, [['start_at','<',$time],
+                ['end_at','>',$time]],
+                ['id',
+                'title',
+                'start_at',
+                'end_at',
+                'type',
+                'is_public',
+                'max_choose',
+                'has_pic']);
+        }
+
+
 
         $info = Utils::camelize($info);
 

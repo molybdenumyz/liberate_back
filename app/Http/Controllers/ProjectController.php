@@ -148,11 +148,11 @@ class ProjectController extends Controller
 
         $page = $request->input('page', 1);
         $size = $request->input('size', 10);
-
+        $type = $request->input('time', 0);
         return response()->json(
             [
                 'code' => 0,
-                'data' => $this->projectService->getProjectList($page, $size)
+                'data' => $this->projectService->getProjectList($page, $size, $type)
             ]
         );
 

@@ -13,9 +13,9 @@ interface ProjectServiceInterface
 {
     function createProject(array $info);
 
-    function deleteProject($userId,$projectId);
+    function deleteProject($userId, $projectId);
 
-    function getProjectList($page,$rows);
+    function getProjectList($page, $rows, $type);
 
     function getProjectDetail($projectId);
 }
