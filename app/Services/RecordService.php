@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Exceptions\HasVoteException;
 use App\Repository\Eloquent\RecordRepository;
 use App\Services\Contracts\RecordServiceInterface;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,14 @@ class RecordService implements RecordServiceInterface
 
     function addRecord($projectId, array $problemIds, $userId = null, $ip)
     {
+
+        if ($this->recordRepo->getWhereCount(['project_id' => $projectId, 'ip' => $ip]) > 0) {
+            throw new HasVoteException();
+        }
+
+
         DB::transaction(function () use ($projectId, $problemIds, $userId, $ip) {
+
             foreach ($problemIds as $problemId) {
 
                 $item = [

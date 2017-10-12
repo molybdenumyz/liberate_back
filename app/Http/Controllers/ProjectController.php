@@ -45,7 +45,7 @@ class ProjectController extends Controller
             'title' => 'required|max:100',
             'startAt' => 'required|integer',
             'endAt' => 'required|integer',
-            'description' => 'required|max:255',
+            'description' => 'max:255',
             'type' => 'required|integer',
             'isPublic' => 'required|boolean',
             'password' => 'max:255',
@@ -130,7 +130,7 @@ class ProjectController extends Controller
         if ($request->hasHeader('token')) {
             $userId = $this->tokenService->getUserIdByToken($request->header('token'));
         }
-        $ip = $request->getClientIp();
+        $ip = $request->ip();
 
         $this->recordService->addRecord($projectId, $info, $userId, $ip);
 
