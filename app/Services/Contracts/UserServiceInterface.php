@@ -15,17 +15,17 @@ interface UserServiceInterface
 
     function getRepository();
 
-    function register(array $userInfo):int;
+    function register(array $userInfo): int;
 
-    function active(int $userId):bool;
+    function active(int $userId): bool;
 
-    function loginBy(string $param,string $identifier,string $password,string $ip,int $client                 );
+    function loginBy(string $param, string $identifier, string $password, string $ip, int $client);
 
-    function login(int $userId,string $ip,int $client);
+    function login(int $userId, string $ip, int $client);
 
-    function logout(int $userId,int $client);
+    function logout(int $userId, int $client);
 
     // 辅助类函数
 
-    function isUserExist(array $condition):bool;
+    function isUserExist(array $condition): bool;
 }

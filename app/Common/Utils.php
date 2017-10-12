@@ -39,7 +39,7 @@ class Utils
      * @param string $mobile
      * @return bool
      */
-    public static function isMobile(string $mobile): bool
+    public static function isMobile(string $mobile):bool
     {
         $patternMobile = '/(13\d|14[57]|15[^4,\D]|17[678]|18\d)\d{8}|170[059]\d{7}/';
         return preg_match($patternMobile, $mobile) == 1;
@@ -69,20 +69,22 @@ class Utils
     {
         if ($var instanceof \stdClass) {
             // 对对象的转换
-            return self::camelize(get_object_vars($var),$separator);
+            return self::camelize(get_object_vars($var), $separator);
         }
 
-        if (is_array($var)){
+        if (is_array($var)) {
             if (self::isAssoc($var)) {
                 $newKeys = [];
-                foreach ($var as $key => &$value){
+                foreach ($var as $key => &$value) {
                     if (isset($newKeys[$key])) {
                         continue;
                     }
-                    $newKey = self::camelizeString($key,$separator);
+                    $newKey = self::camelizeString($key, $separator);
                     $newKeys[$newKey] = true;
-                    $var[$newKey] =  self::camelize($value,$separator);
-                    unset($var[$key]);
+                    $var[$newKey] = self::camelize($value, $separator);
+                    if ($key != $newKey) {
+                        unset($var[$key]);
+                    }
                 }
             }
         }
@@ -98,9 +100,9 @@ class Utils
     public static function unCamelize(&$var,$separator='_'){
 
         if ($var instanceof \stdClass) {
-        // 对对象的转换
-        return self::unCamelize(get_object_vars($var), $separator);
-    }
+            // 对对象的转换
+            return self::unCamelize(get_object_vars($var), $separator);
+        }
 
         if (is_array($var)) {
             if (self::isAssoc($var)) {

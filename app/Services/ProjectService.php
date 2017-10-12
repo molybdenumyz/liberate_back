@@ -43,13 +43,13 @@ class ProjectService implements ProjectServiceInterface
 
     }
 
-    function getProjectList($page, $rows,$type)
+    function getProjectList($page, $rows, $type)
     {
         $time = Utils::createTimeStamp();
 
         //0为未开始
-        if ($type == 0){
-            $info = $this->projectRepo->paginate($page, $rows, [['start_at','>',$time]], ['id',
+        if ($type == 0) {
+            $info = $this->projectRepo->paginate($page, $rows, [['start_at', '>', $time]], ['id',
                 'title',
                 'start_at',
                 'end_at',
@@ -57,26 +57,46 @@ class ProjectService implements ProjectServiceInterface
                 'is_public',
                 'max_choose',
                 'has_pic']);
-        }else{
-            $info = $this->projectRepo->paginate($page, $rows, [['start_at','<',$time],
-                ['end_at','>',$time]],
+
+            $count = $this->projectRepo->getWhereCount([['start_at', '>', $time]]);
+
+        } elseif ($type == 1) {
+            $info = $this->projectRepo->paginate($page, $rows, [['start_at', '<', $time],
+                ['end_at', '>', $time]],
                 ['id',
-                'title',
-                'start_at',
-                'end_at',
-                'type',
-                'is_public',
-                'max_choose',
-                'has_pic']);
+                    'title',
+                    'start_at',
+                    'end_at',
+                    'type',
+                    'is_public',
+                    'max_choose',
+                    'has_pic']);
+            $count = $this->projectRepo->getWhereCount([['start_at', '<', $time],
+                ['end_at', '>', $time]]);
+        } else {
+            $info = $this->projectRepo->paginate($page, $rows, [],
+                ['id',
+                    'title',
+                    'start_at',
+                    'end_at',
+                    'type',
+                    'is_public',
+                    'max_choose',
+                    'has_pic']);
+            $count = $this->projectRepo->getWhereCount();
         }
 
 
+        $info = $info->toArray();
 
-        $info = Utils::camelize($info);
+        foreach ($info as &$item) {
+            $item = Utils::camelize($item);
+        }
+
 
         return [
             'list' => $info,
-            'count' => $this->projectRepo->getWhereCount([['start_at','>',$time]])
+            'count' => $count
         ];
     }
 
