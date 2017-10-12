@@ -26,7 +26,7 @@ class PicController
     public function uploadPic(Request $request)
     {
 
-        if ($request->isMethod('post') && !$request->hasFile('upload')) {
+        if ($request->isMethod('post') && $request->hasFile('upload')) {
 
 
 
