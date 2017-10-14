@@ -73,18 +73,17 @@ class ProjectController extends Controller
                 throw new passwordNeedException();
         }
         DB::transaction(function () use ($info, $picList, $problemList) {
-            if ($picList != null) {
-                $info['has_pic'] = false;
-            } else
-                $info['has_pic'] = true;
+
 
             $projectId = $this->projectService->createProject($info);
 
             $this->problemService->createProblem($projectId, $problemList);
 
             if ($picList != null) {
+                $info['has_pic'] = true;
                 $this->picService->addPicToProject($projectId, $picList);
-            }
+            }else
+                $info['has_pic'] = false;
         });
 
         return response()->json(
