@@ -173,10 +173,16 @@ class ProjectController extends Controller
             if ($password == null || strcmp($info['password'], $password))
                 throw new PermissionDeniedException();
         }
+
+        $data = $this->problemService->getProblemBeforeVote($projectId);
+
+        $data['type'] = $info['type'];
+        $data['maxChoose'] = $info['max_choose'];
+
         return response()->json(
             [
                 'code' => 0,
-                'data' => $this->problemService->getProblemBeforeVote($projectId)
+                'data' => $data
             ]
         );
     }
