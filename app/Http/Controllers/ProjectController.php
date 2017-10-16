@@ -175,6 +175,7 @@ class ProjectController extends Controller
 
         $data = $this->problemService->getProblemBeforeVote($projectId);
 
+        $data['title'] = $info['title'];
         $data['type'] = $info['type'];
         $data['maxChoose'] = $info['max_choose'];
         $data['startAt'] = $info['start_at'];
