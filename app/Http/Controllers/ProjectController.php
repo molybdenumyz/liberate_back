@@ -169,7 +169,7 @@ class ProjectController extends Controller
 
         $info = $this->projectService->getProjectDetail($projectId);
 
-        if (!$info['is_public']) {
+        if (!$info['isPublic']) {
             if ($password == null || strcmp($info['password'], $password))
                 throw new PermissionDeniedException();
         }
