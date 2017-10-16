@@ -160,7 +160,6 @@ class ProjectController extends Controller
     public function getProjectDetail(Request $request, $projectId)
     {
 
-
         $rules = [
             'password' => 'max:255'
         ];
@@ -178,7 +177,8 @@ class ProjectController extends Controller
 
         $data['type'] = $info['type'];
         $data['maxChoose'] = $info['max_choose'];
-
+        $data['startAt'] = $info['start_at'];
+        $data['endAt'] = $info['end_at'];
         return response()->json(
             [
                 'code' => 0,
