@@ -16,4 +16,5 @@ Route::group(['prefix' => '/vote'], function () {
     Route::get('/list', 'ProjectController@getProjectList');
     Route::get('/detail/{projectId}','ProjectController@getProjectDetail');
     Route::post('/pic','PicController@uploadPic');
+    Route::post('/part/{voteId}','ProjectController@vote');
 });

@@ -122,7 +122,8 @@ class ProjectController extends Controller
 
         $data = $this->projectService->getProjectDetail($projectId);
 
-        if ($data['maxChoose'] != count($info)) {
+
+        if ($data['maxChoose'] < count($info)) {
             throw new chooseNumException();
         }
         $userId = -1;

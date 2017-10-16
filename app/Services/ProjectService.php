@@ -102,7 +102,7 @@ class ProjectService implements ProjectServiceInterface
 
     function getProjectDetail($projectId)
     {
-        $info = $this->projectRepo->get($projectId);
+        $info = $this->projectRepo->get($projectId)->toArray();
 
         $info = Utils::camelize($info);
 

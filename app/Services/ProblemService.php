@@ -53,7 +53,7 @@ class ProblemService implements ProblemServiceInterface
     function addProblemChooseNum($problemId)
     {
         return $this->problemRepo->update(['count' =>
-            $this->problemRepo->get($problemId, 'count')->count],
+            $this->problemRepo->get($problemId, ['count'])->count +1],
             $problemId);
     }
 
