@@ -13,4 +13,6 @@ Route::post('/user/login', 'UserController@login');
 Route::group(['middleware' => 'token', 'prefix' => '/user'], function () {
     Route::post('/update/password', 'UserController@updateUserPassword');
     Route::get('/info','UserController@login');
+    Route::get('/part','UserController@showPartInVote');
+    Route::get('/create','UserController@showCreateVote');
 });
