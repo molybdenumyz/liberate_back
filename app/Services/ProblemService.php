@@ -66,7 +66,10 @@ class ProblemService implements ProblemServiceInterface
 
     function getProblemBeforeVote($projectId)
     {
-        $infos = $this->problemRepo->getBy('project_id', $projectId, ['id', 'title'])->toArray();
+        $data = $this->problemRepo->getBy('project_id', $projectId, ['id', 'title'])->toArray();
+
+        $infos['options'] = $data;
+
 
         return $infos;
     }
