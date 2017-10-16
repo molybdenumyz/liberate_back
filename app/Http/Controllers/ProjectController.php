@@ -178,9 +178,9 @@ class ProjectController extends Controller
 
         $data['title'] = $info['title'];
         $data['type'] = $info['type'];
-        $data['maxChoose'] = $info['max_choose'];
-        $data['startAt'] = $info['start_at'];
-        $data['endAt'] = $info['end_at'];
+        $data['maxChoose'] = $info['maxChoose'];
+        $data['startAt'] = $info['startAt'];
+        $data['endAt'] = $info['endAt'];
         return response()->json(
             [
                 'code' => 0,
