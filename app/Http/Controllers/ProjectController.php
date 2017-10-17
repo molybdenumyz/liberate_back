@@ -74,6 +74,10 @@ class ProjectController extends Controller
         }
         DB::transaction(function () use ($info, $picList, $problemList) {
 
+            if ($picList != null) {
+                $info['has_pic'] = true;
+            } else
+                $info['has_pic'] = false;
 
             $projectId = $this->projectService->createProject($info);
 
@@ -82,7 +86,7 @@ class ProjectController extends Controller
             if ($picList != null) {
                 $info['has_pic'] = true;
                 $this->picService->addPicToProject($projectId, $picList);
-            }else
+            } else
                 $info['has_pic'] = false;
         });
 
@@ -181,6 +185,7 @@ class ProjectController extends Controller
         $data['maxChoose'] = $info['maxChoose'];
         $data['startAt'] = $info['startAt'];
         $data['endAt'] = $info['endAt'];
+
         return response()->json(
             [
                 'code' => 0,
