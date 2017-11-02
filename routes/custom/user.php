@@ -15,6 +15,6 @@ Route::group(['middleware' => 'token', 'prefix' => '/user'], function () {
     Route::get('/info','UserController@login');
     Route::get('/part','UserController@showPartInVote');
     Route::get('/create','UserController@showCreateVote');
-    Route::get('/drop/{projectId}','UserController@dropProject');
+    Route::post('/drop/{projectId}','UserController@dropProject');
     Route::get('/statistics/{projectId}','UserController@statistics');
 });

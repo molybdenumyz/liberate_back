@@ -10,6 +10,7 @@ use App\Services\ProblemService;
 use App\Services\ProjectService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
