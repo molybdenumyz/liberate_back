@@ -134,6 +134,7 @@ class ProjectController extends Controller
         if ($request->hasHeader('token')) {
             $userId = $this->tokenService->getUserIdByToken($request->header('token'));
         }
+
         $ip = $request->ip();
 
         $this->recordService->addRecord($projectId, $info, $userId, $ip);

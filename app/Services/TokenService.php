@@ -139,7 +139,7 @@ class TokenService implements TokenServiceInterface
 
         $time = Utils::createTimeStamp();
 
-        if ($token == null || $token->expireAt < $time) return -1;
+        if ($token == null) return -1;
         else return $token->user_id;
     }
 }
