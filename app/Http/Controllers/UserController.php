@@ -4,16 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Common\Utils;
 use App\Common\ValidationHelper;
+use App\Exceptions\Permission\PermissionDeniedException;
+use App\Services\PicService;
+use App\Services\ProblemService;
+use App\Services\ProjectService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     private $userService;
-
-    public function __construct(UserService $userService)
+    private $problemService;
+    private $projectService;
+    private $picService;
+    public function __construct(ProjectService $projectService,PicService $picService,UserService $userService, ProblemService $problemService)
     {
         $this->userService = $userService;
+        $this->problemService = $problemService;
+        $this->picService = $picService;
+        $this->projectService = $projectService;
     }
 
     public function register(Request $request)
@@ -132,6 +141,61 @@ class UserController extends Controller
             [
                 'code' => 0,
                 'data' => $this->userService->showCreateVote($userId)
+            ]
+        );
+    }
+
+
+    public function statistics(Request $request, $projectId)
+    {
+        $voteList = $this->userService->showCreateVote($request->user->id);
+
+        $flag = false;
+        foreach ($voteList as $value) {
+            if ($projectId == $value['id']) {
+                $flag = true;
+                break;
+            }
+        }
+        if ($flag) {
+            $data = $this->problemService->getProblem($projectId);
+        } else
+            throw new PermissionDeniedException();
+
+        return response()->json([
+            'code' => 0,
+            'data' => $data
+        ]);
+    }
+
+
+    public function dropProject(Request $request, $projectId)
+    {
+        $userId = $request->user->id;
+
+        $voteList = $this->userService->showCreateVote($request->user->id);
+
+        $flag = false;
+
+        foreach ($voteList as $value) {
+            if ($projectId == $value['id']) {
+                $flag = true;
+                break;
+            }
+        }
+        if ($flag) {
+            DB::transaction(function () use ($userId, $projectId) {
+                $this->projectService->deleteProject($userId, $projectId);
+                $this->problemService->deleteProblem($projectId, $userId);
+                $this->picService->dropPic($projectId);
+            });
+        } else
+            throw new PermissionDeniedException();
+
+
+        return response()->json(
+            [
+                'code' => 0
             ]
         );
     }
