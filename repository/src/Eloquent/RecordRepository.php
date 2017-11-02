@@ -20,7 +20,7 @@ class RecordRepository extends AbstractRepository
 
     public function showPartInVote($userId){
         return $this->model
-            ->where('user_id',$userId)
+            ->where('records.user_id',$userId)
             ->join('projects','projects.id','=','records.project_id')
             ->select('projects.*')
             ->distinct()
