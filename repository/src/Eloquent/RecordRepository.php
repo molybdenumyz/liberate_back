@@ -22,7 +22,7 @@ class RecordRepository extends AbstractRepository
         return $this->model
             ->where('user_id',$userId)
             ->join('projects','projects.id','=','records.project_id')
-            ->select('project.*')
+            ->select('projects.*')
             ->distinct()
             ->get();
     }
